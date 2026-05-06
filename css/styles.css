@@ -1,5 +1,5 @@
 /* ============================================================
-   GAME TURBO 4.0 — styles.css
+   GAME TURBO 7.0 — styles.css
    Brand Color: #E87304 (Orange)
    ============================================================ */
 
@@ -85,6 +85,11 @@ a:hover { color: var(--primary-dark); }
 
 section { padding: var(--section-padding); }
 img { max-width: 100%; height: auto; }
+
+.image-fallback {
+    object-fit: contain !important;
+    background: linear-gradient(135deg, #0f172a 0%, #1a1a2e 100%);
+}
 
 /* =================== UTILITY =================== */
 .container {

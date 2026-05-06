@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://gameturbo7apk.github.io/sitemap.xml

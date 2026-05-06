@@ -4,6 +4,26 @@
 
 document.addEventListener('DOMContentLoaded', () => {
 
+    // =================== GLOBAL IMAGE FALLBACK ===================
+    const fallbackSvg = "data:image/svg+xml;utf8," + encodeURIComponent(
+        "<svg xmlns='http://www.w3.org/2000/svg' width='512' height='512' viewBox='0 0 512 512'>" +
+        "<rect width='512' height='512' rx='96' fill='#1a1a2e'/>" +
+        "<text x='50%' y='54%' text-anchor='middle' font-size='170' font-family='Segoe UI, Arial, sans-serif' fill='#E87304'>⚡</text>" +
+        "</svg>"
+    );
+
+    document.querySelectorAll('img').forEach((img) => {
+        img.addEventListener('error', () => {
+            if (img.dataset.fallbackApplied === 'true') return;
+            img.dataset.fallbackApplied = 'true';
+            img.src = fallbackSvg;
+            img.classList.add('image-fallback');
+            if (!img.alt || !img.alt.trim()) {
+                img.alt = 'Image unavailable';
+            }
+        }, { once: true });
+    });
+
     // =================== LOADING SCREEN ===================
     const loadingScreen = document.getElementById('loadingScreen');
     if (loadingScreen) {
@@ -55,28 +75,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     });
-
-    // =================== THEME TOGGLE ===================
-    const themeToggle = document.getElementById('themeToggle');
-    const body        = document.body;
-
-    function applyTheme(dark) {
-        body.classList.toggle('dark-theme', dark);
-        const icon = themeToggle ? themeToggle.querySelector('i') : null;
-        if (icon) {
-            icon.className = dark ? 'fas fa-sun' : 'fas fa-moon';
-        }
-        localStorage.setItem('gt-theme', dark ? 'dark' : 'light');
-    }
-
-    // Restore saved preference
-    applyTheme(localStorage.getItem('gt-theme') === 'dark');
-
-    if (themeToggle) {
-        themeToggle.addEventListener('click', () => {
-            applyTheme(!body.classList.contains('dark-theme'));
-        });
-    }
 
     // =================== MOBILE MENU ===================
     const mobileMenuToggle = document.getElementById('mobileMenuToggle');
@@ -154,7 +152,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const card = document.createElement('article');
             card.classList.add('game-card');
             const imageContent = game.image
-                ? `<img src="${game.image}" alt="${game.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;">`
+                ? `<img src="${game.image}" alt="${game.name}" loading="lazy" style="width:100%;height:100%;object-fit:cover;display:block;" onerror="this.outerHTML='<div class=&quot;game-image-placeholder&quot;>${game.emoji}</div>';">`
                 : `<div class="game-image-placeholder">${game.emoji}</div>`;
             card.innerHTML = `
                 <div class="game-image" style="background:linear-gradient(135deg,${game.color}22,${game.color}44)">
@@ -302,23 +300,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     if (statusText)  statusText.textContent = `Downloading… ${Math.round(progress)}%`;
                 }
             }, 220);
-        });
-    }
-
-    // =================== NEWSLETTER FORM ===================
-    const newsletterForm = document.getElementById('newsletterForm');
-    if (newsletterForm) {
-        newsletterForm.addEventListener('submit', e => {
-            e.preventDefault();
-            const input = newsletterForm.querySelector('input[type="email"]');
-            const email = input ? input.value.trim() : '';
-            const re    = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (email && re.test(email)) {
-                if (input) input.value = '';
-                alert('Thanks! You will be notified when a new Game Turbo APK version is available.');
-            } else {
-                alert('Please enter a valid email address.');
-            }
         });
     }
 
